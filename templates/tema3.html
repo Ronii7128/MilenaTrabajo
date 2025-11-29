@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+{% block title %}Tema 3 | Probabilidad de Muerte por Intervalos de Edades{% endblock %}
+
+{% block content %}
+<!-- MathJax -->
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<style>
+  /* ----------- PANEL DE TEORÍA ----------- */
+  .teoria-btn {
+    position: fixed;
+    top: 50%;
+    left: -335px;
+    transform: translateY(-50%);
+    background: linear-gradient(135deg, #1b3556, #3b82f6);
+    color: white;
+    padding: 12px 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    border-radius: 0 10px 10px 0;
+    cursor: pointer;
+    z-index: 1055;
+    transition: all 0.35s cubic-bezier(.2,.8,.2,1);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  }
+  .teoria-btn:hover { transform: translateY(-50%) scale(1.03); }
+  .teoria-btn.open { left: -15px; }
+  h3.titulo-pasos {
+    color: red !important;
+  }
+
+  p {
+    color: black !important;
+  }
+  .teoria-panel {
+    position: fixed;
+    top: -16%;
+    left: -740px;
+    width: 350px;
+    height: 100vh;
+    background-color: #ffffff;
+    box-shadow: 6px 0 24px rgba(0,0,0,0.18);
+    padding: 28px;
+    overflow-y: auto;
+    transition: left 0.36s cubic-bezier(.2,.8,.2,1);
+    z-index: 1050;
+    border-right: 6px solid #1b3556;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+  }
+
+  /* Texto negro solo dentro del bloque de desarrollo */
+  .formula-container h3,
+  .formula-container p,
+  .formula-container b {
+    color: #000 !important;
+  }
+
+  /* También fuerza a que MathJax renderice las fórmulas en negro */
+  mjx-container[jax="SVG"] svg {
+    fill: #000 !important;
+  }
+
+
+  .teoria-panel.open { left: -350px; }
+
+  .teoria-panel h3 { color:#1b3556; font-weight:700; margin-bottom:12px; }
+  .teoria-panel p { color:#4b5a6b; line-height:1.6; text-align:justify; }
+
+  .teoria-close {
+    display:block;
+    text-align:right;
+    font-size:1.4rem;
+    cursor:pointer;
+    color:#1b3556;
+    margin-bottom:8px;
+    font-weight:bold;
+  }
+
+  .teoria-overlay {
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.18);
+    z-index:1048;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.3s;
+  }
+  .teoria-overlay.show {
+    opacity:1;
+    pointer-events:all;
+  }
+
+  /* ----------- CAJA DEL DESARROLLO ----------- */
+  .formula-container {
+    background-color: #f9f9f9;
+    border: 3px solid #0f172a;
+    border-radius: 15px;
+    padding: 25px;
+    margin: 35px auto;
+    max-width: 780px;
+    text-align: center;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+  }
+
+  .formula-container h3 {
+    color: #003366;
+    font-weight: 800;
+    font-size: 1.7em;
+    margin-bottom: 20px;
+  }
+
+  .formula-container p {
+    font-size: 1.25em;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 18px;
+  }
+
+  .formula-container hr {
+    border: 1px solid #ccc;
+    margin: 20px 0;
+  }
+
+  .resultado-final {
+    font-size: 1.6em;
+    font-weight: 900;
+    color: #000000;
+    margin-top: 20px;
+  }
+
+  @media (max-width:700px) {
+    .formula-container { font-size: 16px; padding: 15px; }
+  }
+  .formula-container h3.titulo-pasos {
+  color: red !important;
+  font-weight: 800;
+  font-size: 1.7em;
+}
+
+h3.titulo-pasos,
+.formula-container h3.titulo-pasos b {
+  color: #ff0000 !important;
+  -webkit-text-fill-color: #ff0000 !important;
+  -webkit-text-stroke: 0px #ff0000 !important;
+  text-shadow: none !important;
+}
+</style>
+
+<!-- BOTÓN DE TEORÍA -->
+<div id="openTeoria" class="teoria-btn" role="button">Teoría</div>
+
+<!-- OVERLAY -->
+<div id="teoriaOverlay" class="teoria-overlay"></div>
+
+<!-- PANEL DE TEORÍA -->
+<aside id="teoriaPanel" class="teoria-panel">
+  <span id="closeTeoria" class="teoria-close">&times;</span>
+
+  <h3>📘 Teoría: Probabilidad de Muerte por Intervalos de Edades</h3>
+  <p>
+    La <strong>probabilidad de muerte por intervalos de edades</strong> representa la probabilidad de que una persona,
+    que ya ha alcanzado cierta edad <strong>m</strong>, fallezca dentro de un intervalo de edades entre 
+    <strong>a</strong> y <strong>b</strong>.
+  </p>
+  <p>
+    En otras palabras, mide la posibilidad de que el fallecimiento ocurra entre las edades 
+    <strong>a</strong> y <strong>b</strong>, dado que la persona ya tiene edad <strong>m</strong> 
+    y ha sobrevivido hasta ese momento.
+  </p>
+  <p>
+    Esta probabilidad se utiliza en el <strong>cálculo actuarial</strong> para analizar la mortalidad 
+    en rangos amplios y estimar primas, reservas y beneficios en seguros de vida y pensiones.
+  </p>
+
+  <h4 style="color:#1b3556; margin-top:16px;">📐 Fórmula</h4>
+  <p style="text-align:center; font-weight:bold; color:#1b3556;">
+    <em>P(a &lt; X &lt; b | X &gt; m) = (S(a) − S(b)) / S(m)</em>
+  </p>
+
+  <p>
+    <strong><em>
+    <b>Donde:</b><br>
+    • <b>P(a&lt;X&lt;b|X&gt;m):</b> Probabilidad de que una persona con edad actual m muera entre las edades a y b.<br>
+    • <b>S(x):</b> Función de sobrevivencia, que indica la probabilidad de vivir más allá de la edad x.<br>
+    • <b>X:</b> Variable aleatoria que representa la edad al morir.<br>
+    • <b>m:</b> Edad actual.<br>
+    • <b>a:</b> Inicio del intervalo de edades.<br>
+    • <b>b:</b> Fin del intervalo de edades.
+    </em></strong>
+  </p>
+  <hr>
+</aside>
+
+<!-- CALCULADORA -->
+<div class="card" style="background:#fff; border-radius:20px; box-shadow:0 8px 25px rgba(0,0,0,0.12); padding:30px; width:100%; max-width:850px; margin:auto;">
+  <h2 style="text-align:center; font-weight:700; color:#1b3556; margin-bottom:15px;">
+    Probabilidad de Muerte por Intervalos de Edades
+  </h2>
+  <p style="text-align:center; color:#6b7a90;">
+    Ingresa la función de sobrevivencia y los valores de <strong>a</strong>, <strong>b</strong> y <strong>m</strong>.
+  </p>
+
+  <form method="POST" action="/calcular3" style="margin-top:18px;">
+    <div class="mb-3">
+      <label class="form-label"><b>Función de sobrevivencia S(x):</b></label>
+      <input type="text" name="funcion" class="form-control form-control-lg" placeholder="Ejemplo: 1 - x^2/10000 ó 1 - x**2/10000" value="{{ funcion or '' }}" required>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">Edad a:</label>
+        <input type="number" step="any" name="a" class="form-control form-control-lg" value="{{ a or '' }}" required>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Edad b:</label>
+        <input type="number" step="any" name="b" class="form-control form-control-lg" value="{{ b or '' }}" required>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Edad m:</label>
+        <input type="number" step="any" name="m" class="form-control form-control-lg" value="{{ m or '' }}" required>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-lg mt-3" style="background:linear-gradient(90deg,#1b3556,#3b82f6); color:white; width:100%; border:none; border-radius:10px;">
+      Calcular
+    </button>
+  </form>
+
+  {% if resultado is defined %}
+<div class="formula-container">
+  <h3 class="titulo-pasos"><b>Desarrollo paso a paso</b></h3>
+
+  {% for p in pasos %}
+  <p>$$ {{ p|safe }} $$</p>
+  {% endfor %}
+
+  <hr>
+  <p class="resultado-final">
+    <b>Resultado Final:</b> {{ (resultado * 100) | round(2) }}%
+  </p>
+</div>
+
+{% elif error is defined %}
+<div class="text-danger mt-4 text-center" style="font-size:1.05rem;">
+  <p>{{ error }}</p>
+</div>
+{% endif %}
+</div>
+
+<!-- SCRIPT PANEL -->
+<script>
+  (function(){
+    const btn = document.getElementById('openTeoria');
+    const panel = document.getElementById('teoriaPanel');
+    const closeBtn = document.getElementById('closeTeoria');
+    const overlay = document.getElementById('teoriaOverlay');
+
+    function toggleTeoria(e){
+      if(e) e.stopPropagation();
+      const isOpen = panel.classList.contains('open');
+      if(isOpen){
+        panel.classList.remove('open');
+        btn.classList.remove('open');
+        overlay.classList.remove('show');
+      } else {
+        panel.classList.add('open');
+        btn.classList.add('open');
+        overlay.classList.add('show');
+      }
+    }
+
+    btn.addEventListener('click', toggleTeoria);
+    closeBtn.addEventListener('click', toggleTeoria);
+    overlay.addEventListener('click', toggleTeoria);
+  })();
+</script>
+
+{% endblock %}

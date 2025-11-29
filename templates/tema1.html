@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+{% block title %}Tema 1 | Función de Sobrevivencia{% endblock %}
+
+{% block content %}
+<!-- MathJax -->
+<script>
+  MathJax = {
+    tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<style>
+  /* ---------- BOTÓN Y PANEL TEORÍA ---------- */
+  .teoria-btn {
+    position: fixed;
+    top: 50%;
+    left: -335px;
+    transform: translateY(-50%);
+    background: linear-gradient(135deg, #1b3556, #3b82f6);
+    color: white;
+    padding: 12px 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    border-radius: 0 10px 10px 0;
+    cursor: pointer;
+    z-index: 1055;
+    transition: all 0.35s cubic-bezier(.2,.8,.2,1);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  }
+  .teoria-btn:hover { transform: translateY(-50%) scale(1.03); }
+  .teoria-btn.open { left: -15px; }
+
+  .teoria-panel {
+    position: fixed;
+    top: -16%;
+    left: -740px;
+    width: 350px;
+    height: 100vh;
+    background-color: #ffffff;
+    box-shadow: 6px 0 24px rgba(0,0,0,0.18);
+    padding: 28px;
+    overflow-y: auto;
+    transition: left 0.36s cubic-bezier(.2,.8,.2,1);
+    z-index: 1050;
+    border-right: 6px solid #1b3556;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+  }
+  .teoria-panel.open { left: -350px; }
+
+  .teoria-panel h3 { color: #1b3556; font-weight:700; margin-bottom:12px; }
+  .teoria-panel p { color: #4b5a6b; line-height:1.6; text-align:justify; }
+
+  .teoria-close {
+    display: block;
+    text-align: right;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: #1b3556;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+
+  .teoria-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.18);
+    z-index: 1048;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .teoria-overlay.show {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .fadeInRight { animation: fadeInRight 0.6s ease; }
+  @keyframes fadeInRight {
+    from { opacity: 0; transform: translateX(-8px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  @media (max-width: 600px) {
+    .teoria-panel { width: 90%; left: -100%; }
+    .teoria-panel.open { left: 0; }
+    .teoria-btn.open { left: calc(90% - 46px); }
+  }
+
+  /* ---------- ESTILO DEL DESARROLLO ---------- */
+  .formula-container {
+    background: #fff;
+    border: 3px solid #0f172a;
+    border-radius: 18px;
+    padding: 35px;
+    margin: 40px auto;
+    max-width: 780px;
+    text-align: center;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+  }
+
+  .titulo-pasos {
+    color: #ff0000;
+    font-weight: 800;
+    font-size: 1.7em;
+    margin-bottom: 25px;
+  }
+
+  .formula-container p {
+    font-size: 1.3em;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 18px;
+  }
+
+  .formula-container hr {
+    border: 1px solid #ccc;
+    margin: 25px 0;
+  }
+
+  .resultado-final {
+    font-size: 1.6em;
+    font-weight: 900;
+    color: #000;
+    margin-top: 25px;
+  }
+
+  mjx-container[jax="SVG"] svg {
+    fill: #000 !important;
+  }
+   .resultado-final {
+    font-size: 1.6em;
+    font-weight: 900;
+    color: #000;
+    margin-top: 25px;
+  }
+
+  /* --- Forzar las fórmulas y textos a negro --- */
+  mjx-container[jax="SVG"] svg {
+    fill: #000 !important;
+    color: #000 !important;
+  }
+
+  .formula-container p {
+    color: #000 !important;
+  }
+</style>
+
+<!-- BOTÓN VERTICAL -->
+<div id="openTeoria" class="teoria-btn" role="button">Teoría</div>
+<div id="teoriaOverlay" class="teoria-overlay"></div>
+
+<!-- PANEL -->
+<aside id="teoriaPanel" class="teoria-panel">
+  <span id="closeTeoria" class="teoria-close">&times;</span>
+
+  <h3>📘 Teoría: Función de Sobrevivencia</h3>
+  <p>
+    La función de sobrevivencia indica la probabilidad de que una persona viva más allá de una edad <strong>x</strong>.
+    Es decir, muestra qué proporción de individuos aún sobrevive después de esa edad dentro de una población.
+  </p>
+  <p>
+    Es una herramienta esencial en cálculos actuariales para seguros de vida, rentas vitalicias y estudios de longevidad.
+  </p>
+  <h4 style="color:#1b3556; margin-top:16px;">📐 Fórmula</h4>
+  <p style="text-align:center; font-weight:bold; color:#1b3556;">
+    <em>S(x) = P(X > x)</em>
+  </p>
+</aside>
+
+<!-- CALCULADORA -->
+<div class="card fadeInRight" style="background:#fff; border-radius:20px; box-shadow:0 8px 25px rgba(0,0,0,0.12); padding:30px; width:100%; max-width:850px; margin:auto;">
+  <h2 style="text-align:center; font-weight:700; color:#1b3556;">Función de Sobrevivencia (S(x))</h2>
+  <p style="text-align:center; color:#6b7a90;">Ingresa la función y el valor de x para calcular S(x).</p>
+
+  <form method="POST" action="/calcular" style="margin-top:18px;">
+    <div class="mb-3">
+      <label class="form-label"><b>Función de sobrevivencia S(x):</b></label>
+      <input type="text" name="funcion" class="form-control form-control-lg" placeholder="Ejemplo: 1 - x^2/10000" value="{{ funcion or '' }}" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Edad (x):</label>
+      <input type="number" step="any" name="edad" class="form-control form-control-lg" placeholder="Ejemplo: 40" value="{{ edad or '' }}" required>
+    </div>
+
+    <button type="submit" class="btn btn-lg" style="background:linear-gradient(90deg,#1b3556,#3b82f6); color:white; border:none; border-radius:10px; width:100%;">
+      Calcular
+    </button>
+  </form>
+
+
+
+    {% if resultado is defined %}
+<div class="formula-container">
+  <h3 class="titulo-pasos"><b>Desarrollo paso a paso</b></h3>
+
+  {# Mostramos cada paso (ya en LaTeX) #}
+  {% for paso in pasos %}
+    <p>$$ {{ paso|safe }} $$</p>
+  {% endfor %}
+
+    <hr>
+
+    <p class="resultado-final">
+      <b>Resultado Final:</b> {{ (resultado * 100) | round(2) | int }}%
+    </p>
+  </div>
+
+  {% elif error is defined %}
+  <div class="text-danger mt-4 text-center" style="font-size:1.05rem;">
+    <p>{{ error }}</p>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  (function(){
+    const btn = document.getElementById('openTeoria');
+    const panel = document.getElementById('teoriaPanel');
+    const closeBtn = document.getElementById('closeTeoria');
+    const overlay = document.getElementById('teoriaOverlay');
+
+    function toggleTeoria(e){
+      if(e) e.stopPropagation();
+      const isOpen = panel.classList.contains('open');
+      if(isOpen){
+        panel.classList.remove('open');
+        btn.classList.remove('open');
+        overlay.classList.remove('show');
+      } else {
+        panel.classList.add('open');
+        btn.classList.add('open');
+        overlay.classList.add('show');
+      }
+    }
+
+    btn.addEventListener('click', toggleTeoria);
+    closeBtn.addEventListener('click', toggleTeoria);
+    overlay.addEventListener('click', toggleTeoria);
+  })();
+</script>
+{% endblock %}
